@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Contact - Dashxpert</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container my-5">
+  <div class="card shadow-sm p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0">📞 Contact Us</h2>
+      <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm">🏠 Home</a>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <p><strong>Email:</strong> <a href="mailto:dashxper6@gmail.com">dashxper6@gmail.com</a></p>
+        <p><strong>Phone:</strong> <a href="tel:+919716510843">+91 9716510843</a></p>
+        <p><strong>Address:</strong> New Delhi, India</p>
+      </div>
+      <div class="col-md-6 text-center">
+        <img src="{% static 'contact-us.svg' %}" alt="Contact" class="img-fluid" style="max-height: 180px;">
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

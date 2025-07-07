@@ -1,0 +1,34 @@
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New Client - Dashxpert</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container py-5" style="max-width: 600px;">
+
+    <!-- 🔗 Header with Home Link -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-semibold mb-0">➕ Add New Client</h2>
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm">🏠 Home</a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="d-grid mt-3">
+                    <button type="submit" class="btn btn-primary btn-block">💾 Save Client</button>
+                </div>
+            </form>
+            <a href="{% url 'client_list' %}" class="btn btn-link mt-3">← Back to Clients</a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

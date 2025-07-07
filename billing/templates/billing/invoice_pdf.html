@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 12mm;
+        }
+
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 10.5px;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        h2 {
+            text-align: center;
+            margin: 5px 0 15px 0;
+            color: #000;
+        }
+
+        .logo {
+            width: 130px;
+            float: right;
+            margin-bottom: 10px;
+        }
+
+        .section {
+            margin-bottom: 12px;
+            page-break-inside: avoid;
+        }
+
+        .invoice-meta, .client-info, .totals, .payment-info {
+            padding: 10px;
+        }
+
+        .client-info, .payment-info {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+        }
+
+        .invoice-meta p, .client-info p, .payment-info p, .totals p {
+            margin: 3px 0;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            font-weight: bold;
+            border: 2px solid;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .paid {
+            color: green;
+            border-color: green;
+        }
+
+        .unpaid {
+            color: red;
+            border-color: red;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            page-break-inside: avoid;
+        }
+
+        th, td {
+            border: 1px solid #444;
+            padding: 6px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #eaeaea;
+        }
+
+        .totals {
+            text-align: right;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 9px;
+            color: #888;
+            margin-top: 20px;
+        }
+
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .watermark {
+            position: fixed;
+            top: 40%;
+            left: 30%;
+            font-size: 80px;
+            opacity: 0.06;
+            color: #888;
+            transform: rotate(-30deg);
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ✅ Watermark for Free plan -->
+    {% if show_watermark %}
+        <div class="watermark">Dashxpert</div>
+    {% endif %}
+
+    <div class="clearfix">
+        <!-- ✅ Custom Logo for Pro plan -->
+        {% if custom_logo_url %}
+            <img src="{{ custom_logo_url }}" alt="User Logo" class="logo">
+        {% else %}
+            <img src="https://yourdomain.com/static/logo.png" alt="Dashxpert Logo" class="logo">
+        {% endif %}
+    </div>
+
+    <h2>Invoice #{{ invoice.invoice_number }}</h2>
+
+    {% if invoice.status|lower == "paid" %}
+        <div class="status-badge paid">✔ PAID</div>
+    {% else %}
+        <div class="status-badge unpaid">✘ UNPAID</div>
+    {% endif %}
+
+    <!-- ✅ Invoice Metadata -->
+    <div class="invoice-meta section">
+        <p><strong>Date:</strong> {{ invoice.date }}</p>
+        <p><strong>Due Date:</strong> {{ invoice.due_date }}</p>
+    </div>
+
+    <!-- ✅ Client Info -->
+    <div class="client-info section">
+        <p><strong>Client:</strong> {{ invoice.client.name }}</p>
+        <p><strong>Email:</strong> {{ invoice.client.email }}</p>
+        {% if invoice.client.company_name %}
+            <p><strong>Company:</strong> {{ invoice.client.company_name }}</p>
+        {% endif %}
+        {% if invoice.client.gst_number %}
+            <p><strong>GST Number:</strong> {{ invoice.client.gst_number }}</p>
+        {% endif %}
+    </div>
+
+    <!-- ✅ Items Table -->
+    <div class="section">
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Unit Price (₹)</th>
+                    <th>Tax (%)</th>
+                    <th>Total (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in invoice.items.all %}
+                <tr>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.unit_price }}</td>
+                    <td>{{ item.tax_rate }}</td>
+                    <td>{{ item.total_price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ✅ Totals -->
+    <div class="totals section">
+        <p>Total (Excl. Tax): ₹{{ invoice.total_amount }}</p>
+        <p>Tax Amount: ₹{{ invoice.tax_amount }}</p>
+        <p><strong>Grand Total: ₹{{ invoice.grand_total }}</strong></p>
+    </div>
+
+    <!-- ✅ Payment Info -->
+    <div class="payment-info section">
+        <h4>💳 Payment Information</h4>
+        {% if user.userprofile.bank_account_name %}
+            <p><strong>Account Holder:</strong> {{ user.userprofile.bank_account_name }}</p>
+            <p><strong>Account Number:</strong> {{ user.userprofile.bank_account_number }}</p>
+            <p><strong>IFSC Code:</strong> {{ user.userprofile.ifsc_code }}</p>
+            <p><strong>UPI ID:</strong> {{ user.userprofile.upi_id }}</p>
+        {% else %}
+            <p>No payment details provided.</p>
+        {% endif %}
+    </div>
+
+
+<!-- ✅ Footer -->
+<div class="footer text-center">
+    {% if invoice.user.userprofile.current_plan.name|lower == "pro" and invoice.user.userprofile.custom_logo %}
+        <img src="{{ invoice.user.userprofile.custom_logo.url }}" alt="Custom Logo" style="max-height: 50px; margin-bottom: 10px;"><br>
+    {% elif invoice.user.userprofile.current_plan.name|lower == "free" %}
+        <p><em>Watermark: Generated using free plan on Dashxpert.com</em></p>
+    {% endif %}
+    
+    <p>This is a system-generated invoice from <strong>Dashxpert.com</strong></p>
+</div>
+
+
+</body>
+</html>

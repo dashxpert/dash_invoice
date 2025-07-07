@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Email Sent - Dashxpert</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+  <div class="card shadow p-4 text-center">
+    <h2 class="text-success">✅ Invoice emailed successfully.</h2>
+    <p class="mt-3">The invoice has been sent to your client via email.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary mt-3">🏠 Back to Home</a>
+  </div>
+</div>
+
+</body>
+</html>

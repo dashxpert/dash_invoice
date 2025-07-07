@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to Dashxpert</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    .client-card {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease-in-out;
+    }
+    .client-card:hover {
+      transform: translateY(-5px);
+    }
+    .rating {
+      color: #ffc107;
+    }
+    .stat-card {
+      background-color: #f8f9fa;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+
+
+<!-- 🌐 Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">📊 Dashxpert</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">📞 Contact</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'pricing' %}">💰 Pricing</a></li>
+
+        {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'client_list' %}">👥 Clients</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'invoice_list' %}">📄 Invoices</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'invoice_create' %}">➕ Create Invoice</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'user_dashboard' %}">📊 Dashboard</a></li>
+        {% endif %}
+      </ul>
+
+      <!-- Right aligned items -->
+      <ul class="navbar-nav ms-auto align-items-center">
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <span class="navbar-text me-3">Hi, {{ user.username }}</span>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'edit_payment_info' %}">⚙️ Settings</a>
+          </li>
+          <li class="nav-item">
+            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="nav-link btn btn-link text-danger p-0" style="text-decoration: none;">
+                🚪 Logout
+              </button>
+            </form>
+          </li>
+          {% if user.userprofile and user.userprofile.current_plan and user.userprofile.current_plan.name == "Free" %}
+            <li class="nav-item ms-2">
+              <a href="{% url 'pricing' %}" class="btn btn-warning btn-sm fw-bold">🚀 Upgrade Plan</a>
+            </li>
+          {% endif %}
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">🔐 Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">📝 Register</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+
+
+<!-- 👋 Welcome -->
+<div class="container text-center py-5">
+  <h1 class="display-5 fw-bold">Welcome to Dashxpert 👋</h1>
+  <p class="lead">Your all-in-one invoice & GST management platform for freelancers, creators, and consultants.</p>
+  {% if user.is_authenticated %}
+    <a href="{% url 'client_list' %}" class="btn btn-outline-primary btn-lg m-2">📇 Manage Clients</a>
+    <a href="{% url 'invoice_list' %}" class="btn btn-outline-success btn-lg m-2">🧾 View Invoices</a>
+    <a href="{% url 'invoice_create' %}" class="btn btn-outline-warning btn-lg m-2">➕ Create Invoice</a>
+  {% else %}
+    <a href="{% url 'login' %}" class="btn btn-primary btn-lg m-2">🔐 Login</a>
+    <a href="{% url 'register' %}" class="btn btn-secondary btn-lg m-2">📝 Register</a>
+  {% endif %}
+</div>
+
+
+
+<!-- 📊 Overall Platform Stats -->
+<div class="container my-5">
+  <h3 class="text-center mb-4">🌍 Dashxpert Platform Stats</h3>
+  <div class="row g-4 text-center">
+    <div class="col-md-4">
+      <div class="stat-card p-4 bg-white rounded shadow">
+        <h6 class="text-muted">Total Clients</h6>
+        <h2 class="fw-bold text-primary">{{ total_clients }}</h2>
+      </div>
+
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card p-4 bg-white rounded shadow">
+        <h6 class="text-muted">Total Invoices</h6>
+        <h2 class="fw-bold text-success">{{ total_invoices }}</h2>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card p-4 bg-white rounded shadow">
+        <h6 class="text-muted">Total Revenue (₹)</h6>
+        <h2 class="fw-bold text-danger">₹{{ total_revenue|floatformat:2 }}</h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 🙋‍♂️ Top Freelancers -->
+<div class="container py-4">
+  <h3 class="text-center mb-4">Top Freelancers using Dashxpert 💼</h3>
+  <div class="row g-4">
+    {% for client in sample_clients %}
+    <div class="col-md-4">
+      <div class="client-card p-4 bg-white text-center">
+        <img src="{{ client.photo_url }}" class="rounded-circle mb-3" width="80" alt="{{ client.name }}">
+        <h5>{{ client.name }}</h5>
+        <p class="text-muted">{{ client.profession }}</p>
+        <p class="rating">{{ client.rating }}</p>
+        <p>Email: {{ client.email }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+<!-- ✉️ Newsletter + Contact -->
+<div class="container mt-5 text-center">
+  <h4 class="mb-3">📬 Subscribe to our Newsletter</h4>
+  
+  {% if messages %}
+    <div class="mb-3">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <form method="post" action="{% url 'subscribe' %}" class="row justify-content-center g-2">
+    {% csrf_token %}
+    <div class="col-md-4">
+      <input type="email" name="email" placeholder="Your email" class="form-control" required>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">Subscribe</button>
+    </div>
+  </form>
+</div>
+
+
+
+
+<div class="container mt-5 text-center text-muted small">
+  <hr>
+  <p>&copy; {{ now|date:"Y" }} Dashxpert.com | Built with ❤️ for Indian freelancers, creators, consultants in India </p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice #{{ invoice.invoice_number }} - Dashxpert</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    /* Watermark styling */
+    .invoice-watermark {
+      position: absolute;
+      top: 40%;
+      left: 30%;
+      opacity: 0.07;
+      font-size: 80px;
+      font-weight: bold;
+      transform: rotate(-30deg);
+      z-index: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="bg-light position-relative">
+
+<div class="container py-5" style="max-width: 850px; position: relative; z-index: 1;">
+
+  <!-- ✅ Watermark -->
+  {% if show_watermark %}
+    <div class="invoice-watermark">Dashxpert</div>
+  {% endif %}
+
+  <!-- ✅ Custom Logo (for Pro Plan) -->
+  {% if custom_logo_url %}
+    <div class="text-center mb-3">
+      <img src="{{ custom_logo_url }}" alt="Custom Logo" style="height: 60px;">
+    </div>
+  {% endif %}
+
+    {% if invoice.status != "Paid" %}
+    <a href="{% url 'mark_invoice_paid' invoice.pk %}" class="btn btn-success mt-2">✔️ Mark as Paid</a>
+    {% endif %}
+
+
+  <!-- 🔝 Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">🧾 Invoice #{{ invoice.invoice_number }}</h2>
+    <div>
+      <a href="{% url 'home' %}" class="btn btn-outline-secondary me-2">🏠 Home</a>
+      <a href="{% url 'invoice_pdf' invoice.pk %}" class="btn btn-outline-primary">⬇️ Download PDF</a>
+    </div>
+  </div>
+
+  <a href="{% url 'send_invoice_email' invoice.id %}" class="btn btn-outline-primary mt-3 mb-4">📧 Email to Client</a>
+
+  <!-- 👤 Client Info -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title mb-3">👤 Client Information</h5>
+      <p><strong>Name:</strong> {{ invoice.client.name }}</p>
+      <p><strong>Email:</strong> {{ invoice.client.email }}</p>
+      {% if invoice.client.company_name %}
+        <p><strong>Company:</strong> {{ invoice.client.company_name }}</p>
+      {% endif %}
+      {% if invoice.client.gst_number %}
+        <p><strong>GST:</strong> {{ invoice.client.gst_number }}</p>
+      {% endif %}
+      <p><strong>Status:</strong> 
+        {% if invoice.status == 'Paid' %}
+          <span class="badge bg-success">Paid</span>
+        {% else %}
+          <span class="badge bg-warning text-dark">{{ invoice.status }}</span>
+        {% endif %}
+      </p>
+      <p><strong>Invoice Date:</strong> {{ invoice.date|date:"d M, Y" }}</p>
+      <p><strong>Due Date:</strong> {{ invoice.due_date|date:"d M, Y" }}</p>
+    </div>
+  </div>
+
+  <!-- 📦 Items -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title mb-3">📦 Invoice Items</h5>
+      <table class="table table-bordered">
+        <thead class="table-light">
+          <tr>
+            <th>Description</th>
+            <th>Qty</th>
+            <th>Unit Price (₹)</th>
+            <th>Tax (%)</th>
+            <th>Total (₹)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in invoice.items.all %}
+          <tr>
+            <td>{{ item.description }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.unit_price }}</td>
+            <td>{{ item.tax_rate }}</td>
+            <td>{{ item.total_price }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 💰 Totals -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body text-end">
+      <p><strong>Subtotal:</strong> ₹{{ invoice.total_amount }}</p>
+      <p><strong>Tax:</strong> ₹{{ invoice.tax_amount }}</p>
+      <h4 class="fw-bold">Grand Total: ₹{{ invoice.grand_total }}</h4>
+    </div>
+  </div>
+
+  <!-- 🔙 Back -->
+  <div class="text-center">
+    <a href="{% url 'invoice_list' %}" class="btn btn-outline-dark">← Back to All Invoices</a>
+  </div>
+
+</div>
+
+</body>
+</html>

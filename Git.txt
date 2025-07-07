@@ -1,0 +1,9 @@
+
+C:\Users\dell>git --version
+git version 2.46.0.windows.1
+
+C:\Users\dell>git config --global user.name
+dashxpert
+
+C:\Users\dell>git config --global user.email
+dashxpert6@gmail.com
