@@ -231,3 +231,12 @@ If you aim for:
 25,000 Starter users (₹199) → ₹49,75,000
 
 You cross ₹1 Cr/month with a blended model of ~35,000 active paying users.
+
+6. Build Ecosystem (Phase 2–3)
+GST management module
+
+Automated reminders & expense logging
+
+Client portal login
+
+Mobile app
