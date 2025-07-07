@@ -1,0 +1,130 @@
+
+C:\Users\dell>git --version
+git version 2.46.0.windows.1
+
+C:\Users\dell>git config --global user.name
+dashxpert
+
+C:\Users\dell>git config --global user.email
+dashxpert6@gmail.com
+
+
+Option 2: Create manually using Notepad
+You can also create it easily with:
+
+powershell
+Copy
+Edit
+notepad .gitignore
+Then paste this content and Save:
+
+markdown
+Copy
+Edit
+env/
+*.pyc
+__pycache__/
+*.sqlite3
+media/
+staticfiles/
+.vscode/
+.idea/
+.DS_Store
+Once .gitignore is created, continue with:
+
+bash
+Copy
+Edit
+git init
+git add .
+git commit -m "🚀 Initial commit"
+git remote add origin https://github.com/dashxpert/dash_invoice.git
+git branch -M main
+git push -u origin main
+
+
+
+
+
+
+
+
+✅ Here’s How to Do It (Step-by-Step)
+1. On the New System: Install Git
+If Git isn’t installed yet, download and install Git.
+
+2. Open Terminal / CMD / PowerShell
+Navigate to the directory where you want to clone your project:
+
+bash
+Copy
+Edit
+cd path/to/your/desired/folder
+3. Clone Your Repository
+Use the command below to clone your GitHub repo:
+
+bash
+Copy
+Edit
+git clone https://github.com/dashxpert/dash_invoice.git
+You can also use SSH if you have configured SSH keys:
+
+bash
+Copy
+Edit
+git clone git@github.com:dashxpert/dash_invoice.git
+4. Navigate Into the Project
+bash
+Copy
+Edit
+cd dash_invoice
+5. Recreate Virtual Environment
+If you're using Python virtualenv:
+
+bash
+Copy
+Edit
+python -m venv env
+Activate it:
+
+Windows:
+
+bash
+Copy
+Edit
+env\Scripts\activate
+macOS/Linux:
+
+bash
+Copy
+Edit
+source env/bin/activate
+6. Install Project Dependencies
+Assuming you already have a requirements.txt:
+
+bash
+Copy
+Edit
+pip install -r requirements.txt
+7. Setup Environment Variables
+⚠️ Your .env file was removed from GitHub for security (correct decision!).
+You need to manually create a .env file in the project root on the new system with this content:
+
+env
+Copy
+Edit
+RAZORPAY_KEY_ID=your_key_here
+RAZORPAY_KEY_SECRET=your_secret_here
+DEBUG=True
+SECRET_KEY=your_django_secret_key
+Add any other environment-specific keys you use.
+
+Once that’s done, you can run:
+
+bash
+Copy
+Edit
+python manage.py runserver
+And your Dashxpert project will be running!
+
+Let me know if you'd like a .env.example template to safely share structure with your team.
