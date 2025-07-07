@@ -23,9 +23,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-on2i7x1%!h2=0sy43%@o723n!x_!q!mi04_tm)_7vx=d!n$-!z'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['172.93.104.226', 'dashxpert.com', 'www.dashxpert.com']
+
+CSRF_TRUSTED_ORIGINS = ['https://dashxpert.com', 'https://www.dashxpert.com']
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 
 import pymysql
