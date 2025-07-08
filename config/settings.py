@@ -140,16 +140,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dt',  # your MySQL database name
-        'USER': 'root',  # or the MySQL user you're using
-        'PASSWORD': '12345',
+        'NAME': 'dashxpert_invoice',
+        'USER': 'dashxpert_user',
+        'PASSWORD': 'praveen@1990',
         'HOST': 'localhost',
         'PORT': '3306',
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-        },
     }
 }
+
 
 LOGIN_REDIRECT_URL = 'invoice_list'
 LOGOUT_REDIRECT_URL = 'login'
